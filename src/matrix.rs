@@ -1,3 +1,4 @@
+use crate::min;
 pub struct Matrix {
     a: String,
     b: String,
@@ -34,41 +35,35 @@ impl Matrix {
         vec
     }
 
-    fn fill_matrix(&self) {}
+    // fn fill_the_matrix(&self) {
+    //     for i in 1..self.a.len() {
+    //         for j in 1..self.b.len() {
+    //             self.calculate_distance(
+    //                 i,
+    //                 j,
+    //                 self.a.chars().into_iter().collect(),
+    //                 self.b.chars().into_iter().collect(),
+    //             );
+    //         }
+    //     }
+    // }
 
-    fn calculate_distance(&self, i: usize, j: usize, a: Vec<usize>, b: Vec<usize>) -> usize {
-        if a[i] == 0 {
-            return b[j];
-        } else if b[j] == 0 {
-            return a[i];
-        } else {
-            let insertion = self.matrix[i][j - 1] + 1;
-            let deletion = self.matrix[i - 1][j] + 1;
-            let replacement = match a[i] == b[j] {
-                true => self.matrix[i - 1][j - 1],
-                false => self.matrix[i - 1][j - 1] + 1,
-            };
-
-            return Self::min_of_3(insertion, deletion, replacement);
-        }
-    }
-
-    fn min_of_3(first: usize, second: usize, last: usize) -> usize {
-        if first < second && first < last {
-            return first;
-        }
-
-        if second < first && second < last {
-            return second;
-        }
-
-        last
-    }
+    // fn calculate_distance(&self, i: usize, j: usize, a: Vec<char>, b: Vec<char>) -> usize {}
 
     //for debugging purpose
     pub fn print(&self) {
         for child in &self.matrix {
             println!("{:?}", child);
         }
+    }
+}
+
+#[macro_export]
+macro_rules! min {
+    ($x: expr) => {
+       $x
+    };
+    ($x: expr, $($y: expr), +) => {
+        std::cmp::min($x, min!($($y), +))
     }
 }
