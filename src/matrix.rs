@@ -5,56 +5,69 @@ pub struct Matrix {
     matrix: Vec<Vec<usize>>,
 }
 
-impl Matrix {
-    pub fn new(a: String, b: String) -> Self {
-        let matrix = Self::init_matrix(a.len(), b.len());
-        Self { a, b, matrix }
-    }
+pub fn init_matrix(row: usize, col: usize) -> Vec<Vec<usize>> {
+    let mut vec = vec![];
 
-    fn init_matrix(row: usize, col: usize) -> Vec<Vec<usize>> {
-        let mut vec = vec![];
-
-        for i in 0..=row {
-            let mut child_vec: Vec<usize> = vec![];
-            for j in 0..=col {
-                let first_row = i == 0;
-                if first_row {
-                    child_vec.push(j);
+    for i in 0..=row {
+        let mut child_vec: Vec<usize> = vec![];
+        for j in 0..=col {
+            let first_row = i == 0;
+            if first_row {
+                child_vec.push(j);
+            } else {
+                let first_col = j == 0;
+                if first_col {
+                    child_vec.push(i);
                 } else {
-                    let first_col = j == 0;
-                    if first_col {
-                        child_vec.push(i);
-                    } else {
-                        child_vec.push(0);
-                    }
+                    child_vec.push(0);
                 }
             }
-            vec.push(child_vec);
         }
-        // print!("{:?}", vec);
-        vec
+        vec.push(child_vec);
+    }
+    // print!("{:?}", vec);
+    vec
+}
+
+pub fn find_minimum_distance(a: &String, b: &String) -> usize {
+    //pre-condition
+    if a.len() == 0 {
+        return b.len();
     }
 
-    // fn fill_the_matrix(&self) {
-    //     for i in 1..self.a.len() {
-    //         for j in 1..self.b.len() {
-    //             self.calculate_distance(
-    //                 i,
-    //                 j,
-    //                 self.a.chars().into_iter().collect(),
-    //                 self.b.chars().into_iter().collect(),
-    //             );
-    //         }
-    //     }
-    // }
+    if b.len() == 0 {
+        return a.len();
+    }
 
-    // fn calculate_distance(&self, i: usize, j: usize, a: Vec<char>, b: Vec<char>) -> usize {}
+    if a == b {
+        return 0;
+    }
 
-    //for debugging purpose
-    pub fn print(&self) {
-        for child in &self.matrix {
-            println!("{:?}", child);
+    let mut d = init_matrix(a.len(), b.len());
+
+    for (i_index, i) in a.chars().enumerate() {
+        for (j_index, j) in b.chars().enumerate() {
+            let i_index = i_index + 1;
+            let j_index = j_index + 1;
+
+            if i == j {
+                d[i_index][j_index] = d[i_index - 1][j_index - 1];
+            } else {
+                d[i_index][j_index] = 1 + min!(
+                    d[i_index][j_index - 1],
+                    d[i_index - 1][j_index - 1],
+                    d[i_index - 1][j_index]
+                );
+            }
         }
+    }
+
+    d[a.len()][b.len()]
+}
+
+fn print_matrix(matrix: &Vec<Vec<usize>>) {
+    for row in matrix.iter() {
+        println!("{:?}", row);
     }
 }
 
